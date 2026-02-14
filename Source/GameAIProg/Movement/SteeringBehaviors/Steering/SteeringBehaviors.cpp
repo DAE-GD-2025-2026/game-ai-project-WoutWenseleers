@@ -42,9 +42,11 @@ SteeringOutput Arrive::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
 SteeringOutput Face::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
 {
 	SteeringOutput Steering{};
+	const FVector2D targetVect{ Target.Position - Agent.GetPosition() };
+	const FVector2D facingVect{ Agent.GetActorForwardVector() };
 
-	Steering.AngularVelocity = 50.f;
-	std::cout << "???????????????\n";
+
+	Steering.AngularVelocity = acosf(facingVect.Dot(targetVect) / facingVect.Length() / targetVect.Length()) * 3.1415f / 180;
 
 	return Steering;
 }
@@ -52,11 +54,41 @@ SteeringOutput Face::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
 SteeringOutput Pursuit::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
 {
 	SteeringOutput Steering{};
+	double distance{ (Target.Position - Agent.GetPosition()).Length()};
+	double timeToReachTarget{ distance / Agent.GetMaxLinearSpeed() };
 
-	FVector2D finalTarget{ Target.Position + Target.LinearVelocity };
+	FVector2D finalTarget{ Target.Position + Target.LinearVelocity * timeToReachTarget };
 
 	Steering.LinearVelocity = finalTarget - Agent.GetPosition();
-	Agent.SetMaxLinearSpeed(0.f);
+	Agent.SetMaxLinearSpeed(MaxSpeed/1.5f);
+
+	return Steering;
+}
+
+SteeringOutput Evade::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
+{
+	SteeringOutput Steering{};
+	double distance{ (Target.Position - Agent.GetPosition()).Length()};
+	double timeToReachTarget{ distance / Agent.GetMaxLinearSpeed() };
+
+	FVector2D finalTarget{ Target.Position + Target.LinearVelocity * timeToReachTarget };
+
+	Steering.LinearVelocity = -(finalTarget - Agent.GetPosition());
+	Agent.SetMaxLinearSpeed(MaxSpeed/1.5f);
+
+	return Steering;
+}
+
+SteeringOutput Wander::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
+{
+	SteeringOutput Steering{};
+	double distance{ (Target.Position - Agent.GetPosition()).Length()};
+	double timeToReachTarget{ distance / Agent.GetMaxLinearSpeed() };
+
+	FVector2D finalTarget{ Target.Position + Target.LinearVelocity * timeToReachTarget };
+
+	Steering.LinearVelocity = -(finalTarget - Agent.GetPosition());
+	Agent.SetMaxLinearSpeed(MaxSpeed/1.5f);
 
 	return Steering;
 }
