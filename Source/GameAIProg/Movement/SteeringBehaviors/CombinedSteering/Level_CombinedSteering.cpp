@@ -1,4 +1,4 @@
-﻿#include "Level_CombinedSteering.h"
+#include "Level_CombinedSteering.h"
 
 #include "imgui.h"
 
@@ -14,7 +14,7 @@ ALevel_CombinedSteering::ALevel_CombinedSteering()
 void ALevel_CombinedSteering::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 }
 
 void ALevel_CombinedSteering::BeginDestroy()
@@ -97,6 +97,8 @@ void ALevel_CombinedSteering::Tick(float DeltaTime)
 		ImGui::End();
 	}
 #pragma endregion
-
+	
 	// Combined Steering Update
+ // TODO: implement handling mouse click input for seek
+ // TODO: implement Make sure to also evade the wanderer
 }

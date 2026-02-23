@@ -9,7 +9,7 @@ SteeringOutput Seek::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
 	SteeringOutput Steering{};
 
 	Steering.LinearVelocity = Target.Position - Agent.GetPosition();
-	Agent.SetMaxLinearSpeed(MaxSpeed);
+	//Agent.SetMaxLinearSpeed(MaxSpeed);
 
 	return Steering;
 }
@@ -19,7 +19,7 @@ SteeringOutput Flee::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
 	SteeringOutput Steering{};
 
 	Steering.LinearVelocity = -(Target.Position - Agent.GetPosition());
-	Agent.SetMaxLinearSpeed(MaxSpeed);
+	//Agent.SetMaxLinearSpeed(MaxSpeed);
 
 	return Steering;
 }
@@ -60,7 +60,7 @@ SteeringOutput Pursuit::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
 	FVector2D finalTarget{ Target.Position + Target.LinearVelocity * timeToReachTarget };
 
 	Steering.LinearVelocity = finalTarget - Agent.GetPosition();
-	Agent.SetMaxLinearSpeed(MaxSpeed/1.5f);
+	//Agent.SetMaxLinearSpeed(MaxSpeed/1.5f);
 
 	return Steering;
 }
@@ -74,7 +74,7 @@ SteeringOutput Evade::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
 	FVector2D finalTarget{ Target.Position + Target.LinearVelocity * timeToReachTarget };
 
 	Steering.LinearVelocity = -(finalTarget - Agent.GetPosition());
-	Agent.SetMaxLinearSpeed(MaxSpeed/1.5f);
+	//Agent.SetMaxLinearSpeed(MaxSpeed/1.5f);
 
 	return Steering;
 }
@@ -82,13 +82,17 @@ SteeringOutput Evade::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
 SteeringOutput Wander::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
 {
 	SteeringOutput Steering{};
-	double distance{ (Target.Position - Agent.GetPosition()).Length()};
-	double timeToReachTarget{ distance / Agent.GetMaxLinearSpeed() };
+	const FVector2D facingVect{ Agent.GetActorForwardVector() };
+	const FVector2D actorPosition{ Agent.GetActorLocation() };
 
-	FVector2D finalTarget{ Target.Position + Target.LinearVelocity * timeToReachTarget };
+	float angleIncrement{ rand() / (float)RAND_MAX * m_MaxAngleChange * 2.f - m_MaxAngleChange};
+	m_WanderAngle = m_WanderAngle + angleIncrement;
+	FVector2D finalTarget{ actorPosition +
+		facingVect * m_OffsetDistance + 
+		FVector2D(cosf(m_WanderAngle), sinf(m_WanderAngle)) * m_Radius };
 
-	Steering.LinearVelocity = -(finalTarget - Agent.GetPosition());
-	Agent.SetMaxLinearSpeed(MaxSpeed/1.5f);
+	Steering.LinearVelocity = (finalTarget - Agent.GetPosition());
+	//Agent.SetMaxLinearSpeed(MaxSpeed);
 
 	return Steering;
 }

@@ -90,12 +90,22 @@ public:
 
 };
 
-class Wander : public ISteeringBehavior
+class Wander : public Seek
 {
 public:
 	Wander() = default;
 	virtual ~Wander() override = default;
 
 	virtual SteeringOutput CalculateSteering(float DeltaT, ASteeringAgent& Agent) override;
+
+	void SetWanderOffset(float offset) { m_OffsetDistance = offset; }
+	void SetWanderRadius(float radius) { m_Radius = radius; }
+	void SetMaxAngleChange(float rad) { m_MaxAngleChange = rad; }
+
+protected:
+	float m_OffsetDistance = 6.0f;
+	float m_Radius = 4.0f;
+	float m_MaxAngleChange = PI / 4.f;
+	float m_WanderAngle = 0.f;
 
 };
