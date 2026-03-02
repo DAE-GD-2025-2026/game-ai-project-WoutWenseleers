@@ -87,6 +87,11 @@ public:
 	virtual ~Evade() override = default;
 
 	virtual SteeringOutput CalculateSteering(float DeltaT, ASteeringAgent& Agent) override;
+	
+	void SetEvadeRadius(float radius) { m_EvadeRadius = radius; }
+
+protected:
+	float m_EvadeRadius = 50.0f;
 
 };
 

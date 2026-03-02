@@ -75,7 +75,14 @@ SteeringOutput Evade::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
 
 	Steering.LinearVelocity = -(finalTarget - Agent.GetPosition());
 	//Agent.SetMaxLinearSpeed(MaxSpeed/1.5f);
-
+	if (Steering.LinearVelocity.Length() > m_EvadeRadius)
+	{
+		Steering.IsValid = false;
+	}
+	else
+	{
+		Steering.IsValid = true;
+	}
 	return Steering;
 }
 
