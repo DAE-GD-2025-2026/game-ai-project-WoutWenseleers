@@ -16,9 +16,26 @@ void ALevel_Flocking::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TrimWorld->SetTrimWorldSize(3000.f);
+	TrimWorld->SetTrimWorldSize(1000.f);
 	TrimWorld->bShouldTrimWorld = true;
 
+	pAgentToEvade = GetWorld()->SpawnActor<ASteeringAgent>(
+		SteeringAgentClass,
+		FVector{ 200.f, 200.f, 90.f },
+		FRotator::ZeroRotator
+	);
+
+	if (pAgentToEvade)
+	{
+		pAgentToEvade->SetActorScale3D(FVector(2.f, 2.f, 2.f)); // easy to identify
+
+		pEvadeTargetBehavior->SetWanderOffset(250.f);
+		pEvadeTargetBehavior->SetWanderRadius(150.f);
+		pEvadeTargetBehavior->SetMaxAngleChange(PI / 6.f);
+
+		pAgentToEvade->SetSteeringBehavior(pEvadeTargetBehavior.get());
+	}
+	
 	pFlock = TUniquePtr<Flock>(
 		new Flock(
 			GetWorld(),

@@ -15,9 +15,10 @@ SteeringOutput BlendedSteering::CalculateSteering(float DeltaT, ASteeringAgent& 
 	
 	for (WeightedBehavior weighedBehavior : WeightedBehaviors)
 	{
-		weighedBehavior.pBehavior->SetTarget(Target);
-		FVector2D linVelIncrement = weighedBehavior.pBehavior->CalculateSteering(DeltaT, Agent).LinearVelocity * weighedBehavior.Weight;
+		//weighedBehavior.pBehavior->SetTarget(Target);
+		FVector2D linVelIncrement = weighedBehavior.pBehavior->CalculateSteering(DeltaT, Agent).LinearVelocity;
 		linVelIncrement.Normalize();
+		linVelIncrement *= weighedBehavior.Weight;
 		BlendedSteering.LinearVelocity += linVelIncrement;
 		BlendedSteering.AngularVelocity += weighedBehavior.pBehavior->CalculateSteering(DeltaT, Agent).AngularVelocity * weighedBehavior.Weight;
 	}
@@ -39,6 +40,21 @@ float* BlendedSteering::GetWeight(ISteeringBehavior* const SteeringBehavior)
 		return &it->Weight;
 	
 	return nullptr;
+}
+void BlendedSteering::SetWeight(ISteeringBehavior* const SteeringBehavior, float weight)
+{
+	auto it = find_if(WeightedBehaviors.begin(),
+		WeightedBehaviors.end(),
+		[SteeringBehavior](const WeightedBehavior& Elem)
+		{
+			return Elem.pBehavior == SteeringBehavior;
+		}
+	);
+
+	if(it!= WeightedBehaviors.end())
+		it->Weight = weight;
+	
+	return;
 }
 
 //*****************
