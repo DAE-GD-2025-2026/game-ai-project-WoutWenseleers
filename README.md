@@ -1,3 +1,6 @@
 # Game AI Project
 
-Feel free to edit the readme to your liking
+Contains an unreal implementation of flocking with space partitioning
+
+
+- Wout Wenseleers 2GD11
