@@ -53,9 +53,10 @@ public:
 	virtual ~Arrive() override = default;
 
 	virtual SteeringOutput CalculateSteering(float DeltaT, ASteeringAgent& Agent) override;
+	void SetTargetRadius(float radius) {TargetRadius = radius;}
 
 	const float SlowRadius{1000.f};
-	const float TargetRadius{5.f};
+	float TargetRadius{5.f};
 
 
 };

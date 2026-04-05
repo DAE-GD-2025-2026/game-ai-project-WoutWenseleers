@@ -9,7 +9,7 @@ SteeringOutput Seek::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
 	SteeringOutput Steering{};
 
 	Steering.LinearVelocity = Target.Position - Agent.GetPosition();
-	//Agent.SetMaxLinearSpeed(MaxSpeed);
+	Agent.SetMaxLinearSpeed(MaxSpeed);
 
 	return Steering;
 }
@@ -32,7 +32,7 @@ SteeringOutput Arrive::CalculateSteering(float DeltaT, ASteeringAgent& Agent)
 
 	float Distance = (Target.Position - Agent.GetPosition()).Length();
 
-	const float SpeedFactor = std::clamp(((Distance - TargetRadius) / (SlowRadius)), 0.f, 1.f);
+	const float SpeedFactor = std::clamp(((Distance - TargetRadius) / (SlowRadius - TargetRadius)), 0.f, 1.f);
 
 	Agent.SetMaxLinearSpeed(MaxSpeed * SpeedFactor);
 	
